@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: oumimoun <oumimoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/06 12:56:39 by oumimoun          #+#    #+#             */
-/*   Updated: 2023/12/15 17:22:06 by oumimoun         ###   ########.fr       */
+/*   Created: 2023/12/14 11:59:17 by oumimoun          #+#    #+#             */
+/*   Updated: 2023/12/14 13:48:25 by oumimoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 int	flag(char *str)
 {
@@ -94,19 +94,19 @@ char	*ft_the_next_line(char *temp)
 
 char	*get_next_line(int fd)
 {
-	static char	*temp;
+	static char	*temp[OPEN_MAX];
 	char		*buff;
 	char		*line;
 
-	if (BUFFER_SIZE > INT_MAX || read(fd, 0, 0) < 0 || BUFFER_SIZE <= 0)
-		return (free(temp), temp = NULL, NULL);
-	buff = malloc(BUFFER_SIZE + 1);
+	if (BUFFER_SIZE <= 0 || BUFFER_SIZE > INT_MAX || read(fd, 0, 0) < 0)
+		return (free(temp[fd]), temp[fd] = NULL, NULL);
+	buff = malloc((size_t)BUFFER_SIZE + 1);
 	if (!buff)
-		return (free(temp), temp = NULL, NULL);
-	temp = ft_read_buffer(fd, buff, temp);
-	line = ft_new_line(temp);
+		return (free(temp[fd]), temp[fd] = NULL, NULL);
+	temp[fd] = ft_read_buffer(fd, buff, temp[fd]);
+	line = ft_new_line(temp[fd]);
 	if (!line)
-		return (temp = NULL, NULL);
-	temp = ft_the_next_line(temp);
+		return (temp[fd] = NULL, NULL);
+	temp[fd] = ft_the_next_line(temp[fd]);
 	return (line);
 }
